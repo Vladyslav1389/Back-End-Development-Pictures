@@ -7,6 +7,7 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 json_url = os.path.join(SITE_ROOT, "data", "pictures.json")
 data: list = json.load(open(json_url))
 
+data = []
 ######################################################################
 # RETURN HEALTH OF THE APP
 ######################################################################
@@ -47,7 +48,16 @@ def get_pictures():
 
 @app.route("/picture/<int:id>", methods=["GET"])
 def get_picture_by_id(id):
-    pass
+    try:
+        if not data:
+            return {"message": "data is not exist"}, 500
+        for url in data:
+            if url["id"] == id:
+                return url, 200
+        return {"message": "Url is not found"}, 404
+    except Exception as e:
+        return {"message": f"Something went wrong: {e}"}, 500
+
 
 
 ######################################################################
