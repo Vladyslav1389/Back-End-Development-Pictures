@@ -7,7 +7,7 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 json_url = os.path.join(SITE_ROOT, "data", "pictures.json")
 data: list = json.load(open(json_url))
 
-data = []
+# data = []
 ######################################################################
 # RETURN HEALTH OF THE APP
 ######################################################################
@@ -65,7 +65,24 @@ def get_picture_by_id(id):
 ######################################################################
 @app.route("/picture", methods=["POST"])
 def create_picture():
-    pass
+    try:
+        if not data:
+            return {"message": "data is not exist"}, 500
+
+        new_picture = request.get_json()
+        if not new_picture:
+            return {"message": "A query parameter is missing"},400
+
+        for picture in data:
+            if new_picture["id"] == picture["id"]:
+                return {
+                    "Message": f"picture with id {new_picture['id']} already present"
+                }, 302
+
+        data.append(new_picture)
+        return {"message": "New picture was appended succesfully!"}, 201
+    except Exception as e:
+        return {"message": f"Something went wrong: {e}"}, 500
 
 ######################################################################
 # UPDATE A PICTURE
