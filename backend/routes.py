@@ -71,7 +71,7 @@ def create_picture():
 
         new_picture = request.get_json()
         if not new_picture:
-            return {"message": "A query parameter is missing"},400
+            return {"message": "A query parameter is missing"}, 400
 
         for picture in data:
             if new_picture["id"] == picture["id"]:
@@ -80,7 +80,9 @@ def create_picture():
                 }, 302
 
         data.append(new_picture)
-        return {"message": "New picture was appended succesfully!"}, 201
+        # return {"message": "New picture was appended succesfully!"}, 201
+        return new_picture, 201
+
     except Exception as e:
         return {"message": f"Something went wrong: {e}"}, 500
 
@@ -91,7 +93,23 @@ def create_picture():
 
 @app.route("/picture/<int:id>", methods=["PUT"])
 def update_picture(id):
-    pass
+    try:
+        if not data:
+            return {"message": "data is not exist"}, 500
+        
+        new_picture = request.get_json()
+        if not new_picture:
+            return {"message": "Your body is empty"}, 400
+
+        for i, picture in enumerate(data):
+            if id == picture["id"]:
+                data[i] = new_picture
+                return new_picture, 302
+
+        return {"message": f"Picture with id {id} not found"}, 404
+
+    except Exception as e:
+        return {"message": f"Something went wrong: {e}"}, 400
 
 ######################################################################
 # DELETE A PICTURE
