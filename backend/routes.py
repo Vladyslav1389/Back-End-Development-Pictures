@@ -7,7 +7,7 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 json_url = os.path.join(SITE_ROOT, "data", "pictures.json")
 data: list = json.load(open(json_url))
 
-# data = []
+
 ######################################################################
 # RETURN HEALTH OF THE APP
 ######################################################################
@@ -116,4 +116,14 @@ def update_picture(id):
 ######################################################################
 @app.route("/picture/<int:id>", methods=["DELETE"])
 def delete_picture(id):
-    pass
+    try:
+        if not data:
+            return {"message": "data is not exist"}, 500
+
+        for i, picture in enumerate(data):
+            if picture["id"] == id:
+                del data[i]
+                return {"message": "deleted"}, 204
+        return {"message": "picture not found"}, 404
+    except Exception as e:
+        return {"message": f"Something went wrong: {e}"}
